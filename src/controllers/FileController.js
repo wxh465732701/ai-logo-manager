@@ -1,71 +1,72 @@
 import { ResponseCode, ResponseMessage, formatResponse, HttpStatus } from '../common/GlobalConstants.js';
 
 class FileController {
-  constructor(fileService, logger) {
+  constructor(fileService) {
     this.fileService = fileService;
-    this.logger = logger;
   }
 
-  async handleFileUpload(req, res) {
+  async handleFileUpload(context) {
     try {
-      if (!req.file) {
-        return res.json(formatResponse(
+      const file = context.getRequest().file;
+      if (!file) {
+        return context.getResponse().status(HttpStatus.BAD_REQUEST).json(formatResponse(
           ResponseCode.ERROR,
           '没有文件被上传'
-        ), HttpStatus.BAD_REQUEST);
+        ));
       }
-      const result = await this.fileService.uploadFile(req.file);
-      return res.json(formatResponse(
+
+      const result = await this.fileService.uploadFile(file);
+      return context.getResponse().json(formatResponse(
         ResponseCode.SUCCESS,
         ResponseMessage.SUCCESS,
         result
       ));
     } catch (err) {
-      this.logger.error(`文件上传错误: ${err.message}`);
-      return res.json(formatResponse(
+      context.error(`文件上传错误: ${err.message}`);
+      return context.getResponse().status(HttpStatus.INTERNAL_ERROR).json(formatResponse(
         ResponseCode.ERROR,
         err.message
-      ), HttpStatus.INTERNAL_ERROR);
+      ));
     }
   }
 
-  async handleFileDelete(req, res) {
+  async handleFileDelete(context) {
     try {
-      const { fileKey } = req.params;
+      const { fileKey } = context.getParams();
       const result = await this.fileService.deleteFile(fileKey);
-      return res.json(formatResponse(
+      return context.getResponse().json(formatResponse(
         ResponseCode.SUCCESS,
         ResponseMessage.SUCCESS,
         result
       ));
     } catch (err) {
-      this.logger.error(`文件删除错误: ${err.message}`);
-      return res.json(formatResponse(
+      context.error(`文件删除错误: ${err.message}`);
+      return context.getResponse().status(HttpStatus.INTERNAL_ERROR).json(formatResponse(
         ResponseCode.ERROR,
         err.message
-      ), HttpStatus.INTERNAL_ERROR);
+      ));
     }
   }
 
-  async handleGetFileUrl(req, res) {
+  async handleGetFileUrl(context) {
     try {
-      const { fileKey } = req.params;
-      const { expiresIn } = req.query;
+      const { fileKey } = context.getParams();
+      const { expiresIn } = context.getQuery();
       const result = await this.fileService.getSignedUrl(
         fileKey,
         parseInt(expiresIn) || 3600
       );
-      return res.json(formatResponse(
+      return context.getResponse().json(formatResponse(
         ResponseCode.SUCCESS,
         ResponseMessage.SUCCESS,
         result
       ));
     } catch (err) {
-      this.logger.error(`获取文件URL错误: ${err.message}`);
-      return res.json(formatResponse(
+      context.error(`获取文件URL错误: ${err.message}`);
+      return context.getResponse().status(HttpStatus.INTERNAL_ERROR).json(formatResponse(
         ResponseCode.ERROR,
         err.message
-      ), HttpStatus.INTERNAL_ERROR);
+      ));
     }
   }
 }

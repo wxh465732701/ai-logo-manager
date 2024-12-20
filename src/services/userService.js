@@ -6,17 +6,35 @@ class UserService {
     this.userRepository = userRepository;
   }
 
+  /**
+   * 通过邮箱查找用户
+   * @param {string} email - 邮箱
+   * @returns {Promise<User|null>} 用户信息
+   */
+  async findUserByEmail(email) {
+    return await this.userRepository.findUserByEmail(email);
+  }
+
+  /**
+   * 通过设备ID查找用户
+   * @param {string} deviceId - 设备ID
+   * @returns {Promise<User|null>} 用户信息
+   */
+  async findUserByDeviceId(deviceId) {
+    return await this.userRepository.findUserByDeviceId(deviceId);
+  }
+
   async registerByEmail(email, password) {
-    // 创建并验证注册请求
+    // 创建用户
     const user = new User({
-        email,
-        password,
-      });
+      email,
+      password,
+    });
 
     // 验证用户对象
     const userValidation = user.validate();
     if (!userValidation.isValid) {
-        throw new Error(userValidation.errors.join(', '));
+      throw new Error(userValidation.errors.join(', '));
     }
 
     user.user_name = NameGenerator.generate(10);

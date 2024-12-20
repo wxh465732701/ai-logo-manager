@@ -11,6 +11,52 @@ class UserRepository {
     this.collectionId = '67612c4c002ab937009a';
   }
 
+  /**
+   * 通过邮箱查找用户
+   * @param {string} email - 邮箱
+   * @returns {Promise<UserInfoDTO|null>} 用户信息
+   */
+  async findUserByEmail(email) {
+    try {
+      const users = await this.databases.listDocuments(
+        this.databaseId,
+        this.collectionId,
+        [Query.equal('email', email)]
+      );
+
+      if (users.documents.length === 0) {
+        return null;
+      }
+
+      return new UserInfoDTO(users.documents[0]);
+    } catch (error) {
+      throw new Error(`查找用户失败: ${error.message}`);
+    }
+  }
+
+  /**
+   * 通过设备ID查找用户
+   * @param {string} deviceId - 设备ID
+   * @returns {Promise<UserInfoDTO|null>} 用户信息
+   */
+  async findUserByDeviceId(deviceId) {
+    try {
+      const users = await this.databases.listDocuments(
+        this.databaseId,
+        this.collectionId,
+        [Query.equal('device_id', deviceId)]
+      );
+
+      if (users.documents.length === 0) {
+        return null;
+      }
+
+      return new UserInfoDTO(users.documents[0]);
+    } catch (error) {
+      throw new Error(`查找用户失败: ${error.message}`);
+    }
+  }
+
   async createByEmailAndPassword(user) {
     try {
       // 设置用户id

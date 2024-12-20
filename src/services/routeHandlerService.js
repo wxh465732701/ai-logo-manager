@@ -2,63 +2,73 @@ import { Routes, HttpMethod } from '../constants/routes.js';
 import AuthController from '../controllers/AuthController.js';
 import FileController from '../controllers/FileController.js';
 import UserController from '../controllers/UserController.js';
+import ConfigController from '../controllers/ConfigController.js';
+import RequestContext from '../common/RequestContext.js';
 
 class RouteHandlerService {
-  constructor(userService, fileService, logger) {
-    this.logger = logger;
-    
+  constructor(userService, fileService, configService) {
     // 初始化控制器
-    this.authController = new AuthController(userService, logger);
-    this.fileController = new FileController(fileService, logger);
-    this.userController = new UserController(userService, logger);
+    this.authController = new AuthController(userService);
+    this.fileController = new FileController(fileService);
+    this.userController = new UserController(userService);
+    this.configController = new ConfigController(configService);
 
     // 初始化路由处理器映射
     this.routeHandlers = new Map([
       [{
         path: Routes.REGISTER_BY_EMAIL,
         method: HttpMethod.POST
-      }, this.authController.handleRegisterByEmail.bind(this.authController)],
+      }, (context) => this.authController.handleRegisterByEmail(context)],
       
       [{
         path: Routes.REGISTER_BY_DEVICE,
         method: HttpMethod.POST
-      }, this.authController.handleRegisterByDevice.bind(this.authController)],
+      }, (context) => this.authController.handleRegisterByDevice(context)],
 
       [{
         path: Routes.LOGIN,
         method: HttpMethod.POST
-      }, this.authController.handleLogin.bind(this.authController)],
+      }, (context) => this.authController.handleLogin(context)],
+
+      [{
+        path: Routes.LOGOUT,
+        method: HttpMethod.POST
+      }, (context) => this.authController.handleLogout(context)],
       
       [{
         path: Routes.GET_USER,
         method: HttpMethod.GET
-      }, this.authController.handleGetCurrentUser.bind(this.authController)],
+      }, (context) => this.authController.handleGetCurrentUser(context)],
       
       [{
-        path: Routes.LIST_USERS,
+        path: Routes.GET_GUIDE_CONFIG,
         method: HttpMethod.GET
-      }, this.userController.handleListUsers.bind(this.userController)],
+      }, (context) => this.configController.handleGetGuideConfig(context)],
       
       [{
         path: Routes.PING,
         method: HttpMethod.GET
-      }, this.userController.handlePing.bind(this.userController)],
+      }, (context) => this.userController.handlePing(context)],
       
       [{
         path: Routes.FILE_UPLOAD,
         method: HttpMethod.POST
-      }, this.fileController.handleFileUpload.bind(this.fileController)],
-      
-      [{
-        path: Routes.FILE_DELETE,
-        method: HttpMethod.DELETE
-      }, this.fileController.handleFileDelete.bind(this.fileController)],
-      
-      [{
-        path: Routes.FILE_URL,
-        method: HttpMethod.GET
-      }, this.fileController.handleGetFileUrl.bind(this.fileController)]
+      }, (context) => this.fileController.handleFileUpload(context)],
     ]);
+  }
+
+  /**
+   * 处理请求
+   * @param {RequestContext} context - 请求上下文
+   * @returns {Promise<void>}
+   */
+  async handleRequest(context) {
+    const handler = this.getHandler(context.getRequest().path, context.getRequest().method);
+    
+    if (handler) {
+      return await handler(context);
+    }
+    return null;
   }
 
   // 获取路由处理器

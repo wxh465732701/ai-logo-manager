@@ -1,14 +1,22 @@
 // 路由枚举
 export const Routes = {
+  // auth
   REGISTER_BY_EMAIL: '/auth/register/email',
   REGISTER_BY_DEVICE: '/auth/register/device',
   LOGIN: '/auth/login',
+  LOGOUT: '/auth/logout',
+
+  // user
   GET_USER: '/auth/user',
-  LIST_USERS: '/users/list',
-  PING: '/ping',
+
+  // config
+  GET_GUIDE_CONFIG: '/config/guide',
+
+  // file
   FILE_UPLOAD: '/files/upload',
-  FILE_DELETE: '/files/:fileKey',
-  FILE_URL: '/files/:fileKey/url'
+
+  // ping
+  PING: '/ping'
 };
 
 // HTTP 方法枚举
@@ -17,4 +25,16 @@ export const HttpMethod = {
   POST: 'POST',
   PUT: 'PUT',
   DELETE: 'DELETE'
-}; 
+};
+
+// 公开路由配置
+export const PublicRoutes = [
+  Routes.REGISTER_BY_EMAIL,
+  Routes.REGISTER_BY_DEVICE,
+  Routes.LOGIN,
+  Routes.PING,
+  Routes.GET_GUIDE_CONFIG
+];
+
+// 检查是否是公开路由
+export const isPublicRoute = (path) => PublicRoutes.includes(path); 

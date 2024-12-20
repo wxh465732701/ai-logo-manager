@@ -6,6 +6,7 @@ export const HttpStatus = {
   UNAUTHORIZED: 401,
   FORBIDDEN: 403,
   NOT_FOUND: 404,
+  CONFLICT: 409,
   INTERNAL_ERROR: 500
 };
 
@@ -15,7 +16,11 @@ export const ResponseCode = {
   ERROR: -1,
   UNAUTHORIZED: 401,
   FORBIDDEN: 403,
-  NOT_FOUND: 404
+  NOT_FOUND: 404,
+  USER_EXISTS: 1001,
+  DEVICE_EXISTS: 1002,
+  INVALID_PARAMS: 1003,
+  BUSINESS_ERROR: 1004
 };
 
 // 响应消息
@@ -26,7 +31,10 @@ export const ResponseMessage = {
   FORBIDDEN: 'forbidden',
   NOT_FOUND: 'not found',
   INVALID_PARAMS: 'invalid parameters',
-  SERVER_ERROR: 'server error'
+  SERVER_ERROR: 'server error',
+  USER_EXISTS: 'user already exists',
+  DEVICE_EXISTS: 'device already registered',
+  BUSINESS_ERROR: 'business error'
 };
 
 // 用户状态
@@ -98,7 +106,7 @@ export const Environment = {
   TEST: 'test'
 };
 
-// 缓存键前缀
+// 缓���键前缀
 export const CachePrefix = {
   USER: 'user:',
   TOKEN: 'token:',
@@ -117,4 +125,8 @@ export const formatResponse = (code = ResponseCode.SUCCESS, msg = ResponseMessag
 
 export const GlobalConstants = {
     SYSTEM_USER: 'system_user'
+}
+
+export const ConfigKey = {
+    GUIDE_HOME_IMAGE: 'GUIDE_HOME_IMAGE'
 }

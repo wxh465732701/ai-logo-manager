@@ -1,43 +1,49 @@
-import { Client } from 'node-appwrite';
-import UserRepository from './repositories/userRepository.js';
-import UserService from './services/userService.js';
-import FileService from './services/fileService.js';
-import RouteHandlerService from './services/routeHandlerService.js';
 import { ResponseCode, ResponseMessage, formatResponse } from './common/GlobalConstants.js';
+import { isPublicRoute } from './constants/routes.js';
+import serviceContainer from './common/ServiceContainer.js';
+import authMiddleware from './middleware/auth.js';
 import config from './resource/application.js';
+import RequestContext from './common/RequestContext.js';
 
 // Appwrite 函数入口
 export default async ({ req, res, log, error }) => {
   try {
-    // 创建日志服务
-    const logger = { log, error };
+    // 创建请求上下文
+    const context = new RequestContext(req, res, { log, error });
 
     // 日志记录
-    logger.log('环境:', config.server.environment);
-    logger.log('请求路径:', req.path);
-    logger.log('请求方法:', req.method);
-    logger.log('请求体:', JSON.stringify(req.body));
-    
-    // 初始化 Appwrite 客户端
-    const client = new Client()
-      .setEndpoint(config.appwrite.endpoint)
-      .setProject(config.appwrite.projectId)
-      .setKey(config.appwrite.apiKey);
+    context.log(`环境: ${config.server.environment}`);
+    context.log(`请求路径: ${req.path}`);
+    context.log(`请求方法: ${req.method}`);
+    context.log(`请求体: ${JSON.stringify(req.body)}`);
 
-    // 依赖注入
-    const userRepository = new UserRepository(client);
-    const userService = new UserService(userRepository);
-    const fileService = new FileService();
+    // 获取路由处理器
+    const routeHandler = serviceContainer.getRouteHandler();
 
-    // 初始化路由处理器
-    const routeHandler = new RouteHandlerService(userService, fileService, logger);
+    // 检查是否需要认证
+    if (!isPublicRoute(req.path)) {
+      // 使用认证中间件
+      const auth = authMiddleware(serviceContainer.getUserTokenService());
+      
+      // 等待认证完成
+      let authCompleted = false;
+      await new Promise(resolve => {
+        auth(req, res, () => {
+          authCompleted = true;
+          resolve();
+        });
+      });
 
-    // 获取对应的处理器
-    const handler = routeHandler.getHandler(req.path, req.method);
+      // 如果认证中间件已经发送了响应，直接返回
+      if (!authCompleted) {
+        return;
+      }
+    }
 
-    if (handler) {
-      // 执行处理器
-      return await handler(req, res);
+    // 处理请求
+    const response = await routeHandler.handleRequest(context);
+    if (response) {
+      return response;
     }
 
     // 默认响应
