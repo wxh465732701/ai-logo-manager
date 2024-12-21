@@ -66,9 +66,25 @@ class RouteHandlerService {
     const handler = this.getHandler(context.getRequest().path, context.getRequest().method);
     
     if (handler) {
-      return await handler(context);
+      try{
+        const response = await handler(context);
+        if (response) {
+          return response;
+        }
+      } catch (error) {
+        context.log(`error: ${error.message}`);
+        return context.getResponse().json(formatResponse(
+          ResponseCode.ERROR,
+          ResponseMessage.SERVER_ERROR,
+          { message: error.message }
+        ));
+      }
     }
-    return null;
+
+    return context.getResponse().json(formatResponse(
+      ResponseCode.NOT_FOUND,
+      ResponseMessage.NOT_FOUND
+    ));
   }
 
   // 获取路由处理器

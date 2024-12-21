@@ -3,11 +3,10 @@
  * 用于统一管理请求相关的内容
  */
 class RequestContext {
-  constructor(req, res, logger, error) {
+  constructor(req, res, log, error) {
     this.req = req;
     this.res = res;
-    this.logger = logger;
-    this.error = error;
+    this.logger = {log, error};
     this.startTime = Date.now();
   }
 
@@ -28,15 +27,8 @@ class RequestContext {
   /**
    * 获取日志对象
    */
-  getLogger() {
+  getLog() {
     return this.logger;
-  }
-
-  /**
-   * 获取错误对象
-   */
-  getError() {
-    return this.error;
   }
 
   /**

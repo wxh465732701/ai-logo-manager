@@ -5,18 +5,18 @@ import { ResponseCode, ResponseMessage, formatResponse, HttpStatus } from '../co
  * 用于验证用户是否已登录
  */
 const authMiddleware = (userTokenService) => {
-  return async (req, res, next) => {
+  return async (req, res) => {
     try {
       // 从请求头中获取 Auth_Token
       const authToken = req.headers['auth_token'];
       
       if (!authToken) {
-        return res.status(HttpStatus.UNAUTHORIZED).json(
+        return res.json(
           formatResponse(
             ResponseCode.UNAUTHORIZED,
             ResponseMessage.UNAUTHORIZED,
             { message: 'No authentication token provided' }
-          )
+          ), HttpStatus.UNAUTHORIZED
         );
       }
 
@@ -26,25 +26,22 @@ const authMiddleware = (userTokenService) => {
         
         // 将用户信息添加到请求对象中
         req.user = user;
-        
-        // 继续处理请求
-        next();
       } catch (error) {
-        return res.status(HttpStatus.UNAUTHORIZED).json(
+        return res.json(
           formatResponse(
             ResponseCode.UNAUTHORIZED,
             ResponseMessage.UNAUTHORIZED,
             { message: error.message }
-          )
+          ), HttpStatus.UNAUTHORIZED
         );
       }
     } catch (error) {
-      return res.status(HttpStatus.INTERNAL_ERROR).json(
+      return res.json(
         formatResponse(
           ResponseCode.ERROR,
           ResponseMessage.SERVER_ERROR,
           { message: error.message }
-        )
+        ), HttpStatus.INTERNAL_ERROR
       );
     }
   };

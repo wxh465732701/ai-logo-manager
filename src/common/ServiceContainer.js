@@ -128,8 +128,7 @@ class ServiceContainer {
       this.services.routeHandler = new RouteHandlerService(
         this.getUserService(),
         this.getFileService(),
-        this.getConfigService(),
-        this.services.logger
+        this.getConfigService()
       );
     }
     return this.services.routeHandler;
