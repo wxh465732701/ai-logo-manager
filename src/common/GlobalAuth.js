@@ -1,4 +1,4 @@
-import { ResponseCode, ResponseMessage, formatResponse, HttpStatus } from '../common/GlobalConstants.js';
+import { ResponseCode, ResponseMessage, formatResponse, HttpStatus } from './GlobalConstants.js';
 
 /**
  * 认证中间件

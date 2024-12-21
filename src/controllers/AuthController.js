@@ -71,8 +71,8 @@ class AuthController {
 
   async handleLogin(context) {
     try {
-      const { email, password } = context.getBody();
-      const session = await this.userService.login(email, password);
+      const { email, password, loginType, deviceId } = context.getBody();
+      const session = await this.userService.login(email, password, loginType, deviceId);
       context.log(`用户登录成功: ${session.userId}`);
       return context.getResponse().json(formatResponse(
         ResponseCode.SUCCESS,
@@ -90,7 +90,8 @@ class AuthController {
 
   async handleGetCurrentUser(context) {
     try {
-      const user = await this.userService.getCurrentUser();
+      const userId = context.getUser().user_id;
+      const user = await this.userService.getCurrentUser(userId);
       return context.getResponse().json(formatResponse(
         ResponseCode.SUCCESS,
         ResponseMessage.SUCCESS,
@@ -107,7 +108,8 @@ class AuthController {
 
   async handleLogout(context) {
     try {
-      await this.userService.logout();
+      const userId = context.getUser().user_id;
+      await this.userService.logout(userId);
       return context.getResponse().json(formatResponse(
         ResponseCode.SUCCESS,
         ResponseMessage.SUCCESS

@@ -1,7 +1,7 @@
 import { ResponseCode, ResponseMessage, formatResponse, HttpStatus } from './common/GlobalConstants.js';
 import { isPublicRoute } from './constants/routes.js';
 import serviceContainer from './common/ServiceContainer.js';
-import authMiddleware from './middleware/auth.js';
+import authMiddleware from './common/auth.js';
 import config from './resource/application.js';
 import RequestContext from './common/RequestContext.js';
 

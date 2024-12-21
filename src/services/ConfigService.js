@@ -1,3 +1,5 @@
+import { ConfigKey } from '../common/GlobalConstants.js';
+
 class ConfigService {
   constructor(configRepository) {
     this.configRepository = configRepository;
@@ -26,13 +28,20 @@ class ConfigService {
    */
   async getGuideConfig() {
     try {
-      const configs = await this.getConfig('GUIDE_HOME_IMAGE');
+      const configs = await this.getConfigs([ConfigKey.GUIDE_HOME_IMAGE, ConfigKey.GUIDE_THIRD_PARTY_IMAGE]);
+      const homeImages = configs[ConfigKey.GUIDE_HOME_IMAGE].map(config => ({
+        imageUrl: config.config_value,
+        time: config.update_time
+      }));
+
+      const thirdPartyImages = configs[ConfigKey.GUIDE_THIRD_PARTY_IMAGE].map(config => ({
+        imageUrl: config.config_value,
+        time: config.update_time
+      }));
+
       return {
-        images: configs.map(config => ({
-          imageUrl: config.config_value,
-          updateTime: config.update_time,
-          createTime: config.create_time
-        }))
+        homeImages,
+        thirdPartyImages
       };
     } catch (error) {
       throw new Error(`获取引导页配置失败: ${error.message}`);

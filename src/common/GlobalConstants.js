@@ -128,5 +128,6 @@ export const GlobalConstants = {
 }
 
 export const ConfigKey = {
-    GUIDE_HOME_IMAGE: 'GUIDE_HOME_IMAGE'
+    GUIDE_HOME_IMAGE: 'GUIDE_HOME_IMAGE',
+    GUIDE_THIRD_PARTY_IMAGE: 'GUIDE_THIRD_PARTY_IMAGE'
 }

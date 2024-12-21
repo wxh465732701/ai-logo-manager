@@ -7,7 +7,7 @@ import RouteHandlerService from '../services/routeHandlerService.js';
 import ConfigRepository from '../repositories/ConfigRepository.js';
 import ConfigService from '../services/ConfigService.js';
 import config from '../resource/application.js';
-
+import SessionRepository from '../repositories/sessionRepository.js';
 /**
  * 服务容器类
  * 用于管理服务实例的生命周期
@@ -49,7 +49,8 @@ class ServiceContainer {
       fileService: null,
       configRepository: null,
       configService: null,
-      routeHandler: null
+      routeHandler: null,
+      sessionRepository: null
       };
   }
 
@@ -70,7 +71,7 @@ class ServiceContainer {
    */
   getUserService() {
     if (!this.services.userService) {
-      this.services.userService = new UserService(this.getUserRepository());
+      this.services.userService = new UserService(this.getUserRepository(), this.getUserTokenService());
     }
     return this.services.userService;
   }
@@ -81,9 +82,20 @@ class ServiceContainer {
    */
   getUserTokenService() {
     if (!this.services.userTokenService) {
-      this.services.userTokenService = new UserTokenService(this.client);
+      this.services.userTokenService = new UserTokenService(this.getUserRepository(), this.getSessionRepository());
     }
     return this.services.userTokenService;
+  }
+
+  /**
+   * 获取会话仓库服务
+   * @returns {SessionRepository}
+   */
+  getSessionRepository() {
+    if (!this.services.sessionRepository) {
+      this.services.sessionRepository = new SessionRepository(this.client);
+    }
+    return this.services.sessionRepository;
   }
 
   /**

@@ -2,8 +2,9 @@ import NameGenerator from '../common/utils/NameGenerator.js';
 import { UserInfoDTO as User, UserLoginDTO as UserLoginRequest } from '../models/UserInfoDTO.js';
 
 class UserService {
-  constructor(userRepository) {
+  constructor(userRepository, userTokenService) {
     this.userRepository = userRepository;
+    this.userTokenService = userTokenService;
   }
 
   /**
@@ -60,19 +61,39 @@ class UserService {
     return await this.userRepository.createByDevice(user);
   }
 
-  async login(email, password) {
+  async login(email, password, loginType, deviceId) {
     // 创建并验证登录请求
-    const loginRequest = new UserLoginRequest({ email, password });
+    const loginRequest = new UserLoginRequest({ email, password, loginType, deviceId });
     const { isValid, errors } = loginRequest.validate();
     if (!isValid) {
       throw new Error(errors.join(', '));
     }
 
-    return await this.userRepository.createSession(email, password);
+    if (loginType === 'email') {
+      const user = await this.findUserByEmail(email);
+      if (!user) {
+        throw new Error('Invalid email or password');
+      }
+
+      if (user.password !== password) {
+        throw new Error('Invalid email or password');
+      }
+
+      return await this.userTokenService.createSession(user.user_id);
+    } else if (loginType === 'device') {
+      const user = await this.findUserByDeviceId(deviceId);
+      if (!user) {
+        throw new Error('Invalid User');
+      }
+
+      return await this.userTokenService.createSession(user.user_id);
+    }
+    
+    throw new Error('Invalid login type');
   }
 
-  async getCurrentUser() {
-    const userData = await this.userRepository.getCurrentUser();
+  async getCurrentUser(userId) {
+    const userData = await this.userRepository.getCurrentUser(userId);
     return User.fromJSON(userData);
   }
 
@@ -82,6 +103,10 @@ class UserService {
       ...response,
       users: response.documents.map(user => User.fromJSON(user))
     };
+  }
+
+  async logout(userId) {
+    return await this.userTokenService.deleteSession(userId);
   }
 }
 
