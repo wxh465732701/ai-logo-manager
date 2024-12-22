@@ -9,7 +9,9 @@ export default {
   // Database Configuration
   database: {
     databaseId: '6761243a0025b0056e19',
-    collectionId: '67612c4c002ab937009a'
+    configCollectionId: '6766b4b1000813fca400',
+    sessionCollectionId: '67612b79001a0b246da2',
+    userCollectionId: '67612c4c002ab937009a'
   },
 
   // Server Configuration

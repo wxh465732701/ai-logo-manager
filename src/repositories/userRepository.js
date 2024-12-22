@@ -1,14 +1,14 @@
 import { ID, Databases, Query, Permission, Role } from 'node-appwrite';
 import { UserInfoDTO } from '../models/UserInfoDTO.js';
+import config from '../resource/application.js';
 
 class UserRepository {
   constructor(client) {
     this.databases = new Databases(client);
-    this.account = client.account;
     
     // 数据库和集合的 ID
-    this.databaseId = '6761243a0025b0056e19';
-    this.collectionId = '67612c4c002ab937009a';
+    this.databaseId = config.database.databaseId;
+    this.userCollectionId = config.database.userCollectionId;
   }
 
   /**
@@ -20,7 +20,7 @@ class UserRepository {
     try {
       const users = await this.databases.listDocuments(
         this.databaseId,
-        this.collectionId,
+        this.userCollectionId,
         [Query.equal('email', email)]
       );
 
@@ -43,7 +43,7 @@ class UserRepository {
     try {
       const users = await this.databases.listDocuments(
         this.databaseId,
-        this.collectionId,
+        this.userCollectionId,
         [Query.equal('device_id', deviceId)]
       );
 
@@ -67,7 +67,7 @@ class UserRepository {
       // 然后在数据库中创建用户记录
       const userData = await this.databases.createDocument(
         this.databaseId,
-        this.collectionId,
+        this.userCollectionId,
         user.user_id,
         {
             ...user
@@ -93,7 +93,7 @@ class UserRepository {
 
       const userData = await this.databases.createDocument(
         this.databaseId,
-        this.collectionId,
+        this.userCollectionId,
         user.user_id,
         {
             ...user
@@ -116,7 +116,7 @@ class UserRepository {
     try {
       const users = await this.databases.listDocuments(
         this.databaseId,
-        this.collectionId,
+        this.userCollectionId,
         [Query.equal('userId', userId)]
       );
       return users.documents[0];
@@ -129,7 +129,7 @@ class UserRepository {
     try {
       return await this.databases.listDocuments(
         this.databaseId,
-        this.collectionId,
+        this.userCollectionId,
         [
           Query.limit(limit),
           Query.offset(offset),

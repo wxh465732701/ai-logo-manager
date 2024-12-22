@@ -11,6 +11,7 @@ export const Routes = {
 
   // config
   GET_GUIDE_CONFIG: '/config/guide',
+  ADD_CONFIG: '/c/r/add',
 
   // file
   FILE_UPLOAD: '/files/upload',
@@ -33,7 +34,8 @@ export const PublicRoutes = [
   Routes.REGISTER_BY_DEVICE,
   Routes.LOGIN,
   Routes.PING,
-  Routes.GET_GUIDE_CONFIG
+  Routes.GET_GUIDE_CONFIG,
+  Routes.ADD_CONFIG
 ];
 
 // 检查是否是公开路由

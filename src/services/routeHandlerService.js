@@ -3,7 +3,8 @@ import AuthController from '../controllers/AuthController.js';
 import FileController from '../controllers/FileController.js';
 import UserController from '../controllers/UserController.js';
 import ConfigController from '../controllers/ConfigController.js';
-import RequestContext from '../common/RequestContext.js';
+import { formatResponse, ResponseCode, ResponseMessage } from '../common/GlobalConstants.js';
+
 
 class RouteHandlerService {
   constructor(userService, fileService, configService) {
@@ -45,6 +46,11 @@ class RouteHandlerService {
         method: HttpMethod.GET
       }, (context) => this.configController.handleGetGuideConfig(context)],
       
+      [{
+        path: Routes.ADD_CONFIG,
+        method: HttpMethod.POST
+      }, (context) => this.configController.handleAddConfigs(context)],
+
       [{
         path: Routes.PING,
         method: HttpMethod.GET

@@ -7,7 +7,7 @@ import RouteHandlerService from '../services/routeHandlerService.js';
 import ConfigRepository from '../repositories/ConfigRepository.js';
 import ConfigService from '../services/ConfigService.js';
 import config from '../resource/application.js';
-import SessionRepository from '../repositories/sessionRepository.js';
+import SessionRepository from '../repositories/SessionRepository.js';
 /**
  * 服务容器类
  * 用于管理服务实例的生命周期
