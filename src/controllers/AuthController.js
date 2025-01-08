@@ -69,9 +69,69 @@ class AuthController {
     }
   }
 
+  /**
+   * 处理用户登录请求
+   * 支持邮箱登录和设备登录两种方式
+   * 如果用户/设备不存在，会自动注册
+   * 
+   * 路由: /auth/login
+   * 方法: POST
+   * 
+   * 请求参数：
+   * {
+   *   "loginType": "email" | "device",  // 登录类型：email-邮箱登录，device-设备登录
+   *   "email": "user@example.com",      // 邮箱（邮箱登录时必填）
+   *   "password": "password123",        // 密码（邮箱登录时必填）
+   *   "deviceId": "device123"          // 设备ID（设备登录时必填）
+   * }
+   * 
+   * 响应结果：
+   * {
+   *   "code": 0,                      // 状态码：0-成功，其他-失败
+   *   "msg": "success",               // 状态信息
+   *   "data": {
+   *     "session": {
+   *       "userId": "user123",        // 用户ID
+   *       "token": "token123",        // 会话token
+   *       "expireTime": "2024-01-21"  // 过期时间
+   *     }
+   *   }
+   * }
+   * 
+   * @param {RequestContext} context - 请求上下文
+   * @returns {Promise<Object>} 响应结果
+   */
   async handleLogin(context) {
     try {
       const { email, password, loginType, deviceId } = context.getBody();
+      
+      let user;
+      
+      // 根据登录类型检查用户是否存在
+      if (loginType === 'email') {
+        // 邮箱登录
+        user = await this.userService.findUserByEmail(email);
+        if (!user) {
+          // 用户不存在，自动注册
+          context.log(`用户不存在，自动注册: ${email}`);
+          user = await this.userService.registerByEmail(email, password);
+        }
+      } else if (loginType === 'device') {
+        // 设备登录
+        user = await this.userService.findUserByDeviceId(deviceId);
+        if (!user) {
+          // 设备不存在，自动注册
+          context.log(`设备不存在，自动注册: ${deviceId}`);
+          user = await this.userService.registerByDevice(deviceId);
+        }
+      } else {
+        return context.getResponse().status(HttpStatus.BAD_REQUEST).json(formatResponse(
+          ResponseCode.ERROR,
+          '无效的登录类型'
+        ));
+      }
+
+      // 执行登录
       const session = await this.userService.login(email, password, loginType, deviceId);
       context.log(`用户登录成功: ${session.userId}`);
       return context.getResponse().json(formatResponse(
