@@ -63,7 +63,7 @@ class UserService {
 
   async login(email, password, loginType, deviceId) {
     // 创建并验证登录请求
-    const loginRequest = new UserLoginRequest({ email, password, loginType, deviceId });
+    const loginRequest = new UserLoginRequest({ email: email, password: password, login_type: loginType, device_id: deviceId });
     const { isValid, errors } = loginRequest.validate();
     if (!isValid) {
       throw new Error(errors.join(', '));

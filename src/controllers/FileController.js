@@ -9,10 +9,10 @@ class FileController {
     try {
       const file = context.getRequest().file;
       if (!file) {
-        return context.getResponse().status(HttpStatus.BAD_REQUEST).json(formatResponse(
+        return context.getResponse().json(formatResponse(
           ResponseCode.ERROR,
           '没有文件被上传'
-        ));
+        ), HttpStatus.BAD_REQUEST);
       }
 
       const result = await this.fileService.uploadFile(file);
@@ -23,10 +23,10 @@ class FileController {
       ));
     } catch (err) {
       context.error(`文件上传错误: ${err.message}`);
-      return context.getResponse().status(HttpStatus.INTERNAL_ERROR).json(formatResponse(
+      return context.getResponse().json(formatResponse(
         ResponseCode.ERROR,
         err.message
-      ));
+      ), HttpStatus.INTERNAL_ERROR);
     }
   }
 
@@ -41,10 +41,10 @@ class FileController {
       ));
     } catch (err) {
       context.error(`文件删除错误: ${err.message}`);
-      return context.getResponse().status(HttpStatus.INTERNAL_ERROR).json(formatResponse(
+      return context.getResponse().json(formatResponse(
         ResponseCode.ERROR,
         err.message
-      ));
+      ), HttpStatus.INTERNAL_ERROR);
     }
   }
 
@@ -63,10 +63,10 @@ class FileController {
       ));
     } catch (err) {
       context.error(`获取文件URL错误: ${err.message}`);
-      return context.getResponse().status(HttpStatus.INTERNAL_ERROR).json(formatResponse(
+      return context.getResponse().json(formatResponse(
         ResponseCode.ERROR,
         err.message
-      ));
+      ), HttpStatus.INTERNAL_ERROR);
     }
   }
 }

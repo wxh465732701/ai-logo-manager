@@ -30,10 +30,10 @@ class AuthController {
       ));
     } catch (err) {
       context.error(`注册错误: ${err.message}`);
-      return context.getResponse().status(HttpStatus.BAD_REQUEST).json(formatResponse(
+      return context.getResponse().json(formatResponse(
         ResponseCode.ERROR,
         err.message
-      ));
+      ), HttpStatus.BAD_REQUEST);
     }
   }
 
@@ -62,10 +62,10 @@ class AuthController {
       ));
     } catch (err) {
       context.error(`注册错误: ${err.message}`);
-      return context.getResponse().status(HttpStatus.BAD_REQUEST).json(formatResponse(
+      return context.getResponse().json(formatResponse(
         ResponseCode.ERROR,
         err.message
-      ));
+      ), HttpStatus.BAD_REQUEST);
     }
   }
 
@@ -125,10 +125,10 @@ class AuthController {
           user = await this.userService.registerByDevice(deviceId);
         }
       } else {
-        return context.getResponse().status(HttpStatus.BAD_REQUEST).json(formatResponse(
+        return context.getResponse().json(formatResponse(
           ResponseCode.ERROR,
           '无效的登录类型'
-        ));
+        ), HttpStatus.BAD_REQUEST);
       }
 
       // 执行登录
@@ -141,10 +141,10 @@ class AuthController {
       ));
     } catch (err) {
       context.error(`登录错误: ${err.message}`);
-      return context.getResponse().status(HttpStatus.UNAUTHORIZED).json(formatResponse(
+      return context.getResponse().json(formatResponse(
         ResponseCode.UNAUTHORIZED,
         err.message
-      ));
+      ), HttpStatus.UNAUTHORIZED);
     }
   }
 
@@ -159,10 +159,10 @@ class AuthController {
       ));
     } catch (err) {
       context.error(`获取用户信息错误: ${err.message}`);
-      return context.getResponse().status(HttpStatus.UNAUTHORIZED).json(formatResponse(
+      return context.getResponse().json(formatResponse(
         ResponseCode.UNAUTHORIZED,
         err.message
-      ));
+      ), HttpStatus.UNAUTHORIZED);
     }
   }
 
@@ -176,10 +176,10 @@ class AuthController {
       ));
     } catch (err) {
       context.error(`登出错误: ${err.message}`);
-      return context.getResponse().status(HttpStatus.INTERNAL_ERROR).json(formatResponse(
+      return context.getResponse().json(formatResponse(
         ResponseCode.ERROR,
         err.message
-      ));
+      ), HttpStatus.INTERNAL_ERROR);
     }
   }
 }

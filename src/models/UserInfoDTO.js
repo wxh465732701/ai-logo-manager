@@ -1,6 +1,6 @@
 import { DataType, TypeChecker } from '../common/types/BaseTypes.js';
 import { Regex } from '../common/GlobalConstants.js';
-import { GlobalConstants, UserType, UserSource } from '../common/GlobalConstants.js';
+import { GlobalConstants, UserType, UserSource, UserStatus } from '../common/GlobalConstants.js';
 
 // 用户数据传输对象
 export class UserInfoDTO {
@@ -12,30 +12,48 @@ export class UserInfoDTO {
     this.status = data.status || UserStatus.ACTIVE;
     this.source_type = data.source_type || UserSource.IOS;
     this.device_id = data.device_id || '';
-    this.user_type = data.user_type || UserType.USER;
+    this.user_type = data.user_type || UserType.NORMAL;
     this.create_time = data.create_time || new Date();
     this.update_time = data.update_time || new Date();
     this.update_user = data.update_user || GlobalConstants.SYSTEM_USER;
   }
 
-  // 验证方法
-  validate() {
+  /**
+   * 验证用户数据
+   * @param {string} [validationType] - 验证类型：'email' - 邮箱验证，'device' - 设备验证，不传则验证任一方式
+   * @returns {Object} 验证结果
+   */
+  validate(validationType) {
     const errors = [];
 
-    // 验证必填字段
-    if (TypeChecker.isEmpty(this.email)) {
-      errors.push('Email is required');
-    }
-    if (TypeChecker.isEmpty(this.password)) {
-      errors.push('Password is required');
+    // 根据验证类型检查必填字段
+    if (validationType === 'email') {
+      // 邮箱登录验证
+      if (TypeChecker.isEmpty(this.email)) {
+        errors.push('Email is required');
+      }
+      if (TypeChecker.isEmpty(this.password)) {
+        errors.push('Password is required');
+      }
+    } else if (validationType === 'device') {
+      // 设备登录验证
+      if (TypeChecker.isEmpty(this.device_id)) {
+        errors.push('Device ID is required');
+      }
+    } else {
+      // 默认验证：邮箱+密码 或 设备ID 必须存在其一
+      if (TypeChecker.isEmpty(this.device_id) && 
+          (TypeChecker.isEmpty(this.email) || TypeChecker.isEmpty(this.password))) {
+        errors.push('Either email and password or device ID is required');
+      }
     }
 
-    // 验证邮箱格式
+    // 如果有邮箱，验证邮箱格式
     if (!TypeChecker.isEmpty(this.email) && !Regex.EMAIL.test(this.email)) {
       errors.push('Invalid email format');
     }
 
-    // 验证密码强度
+    // 如果有密码，验证密码强度
     if (!TypeChecker.isEmpty(this.password) && !Regex.PASSWORD.test(this.password)) {
       errors.push('Password must contain at least 8 characters, including uppercase, lowercase, numbers and special characters');
     }
@@ -95,16 +113,26 @@ export class UserLoginDTO {
   constructor(data = {}) {
     this.email = data.email;
     this.password = data.password;
+    this.device_id = data.device_id;
+    this.login_type = data.login_type;
   }
 
   validate() {
     const errors = [];
 
-    if (TypeChecker.isEmpty(this.email)) {
-      errors.push('Email is required');
-    }
-    if (TypeChecker.isEmpty(this.password)) {
-      errors.push('Password is required');
+    if (this.login_type === 'email') {
+      if (TypeChecker.isEmpty(this.email)) {
+        errors.push('Email is required');
+      }
+      if (TypeChecker.isEmpty(this.password)) {
+        errors.push('Password is required');
+      }
+    } else if (this.login_type === 'device') {
+      if (TypeChecker.isEmpty(this.device_id)) {
+        errors.push('Device ID is required');
+      }
+    } else {
+      errors.push('Invalid login type');
     }
 
     return {

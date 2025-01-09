@@ -20,10 +20,10 @@ class UserController {
       ));
     } catch (err) {
       context.error(`获取用户列表错误: ${err.message}`);
-      return context.getResponse().status(HttpStatus.INTERNAL_ERROR).json(formatResponse(
+      return context.getResponse().json(formatResponse(
         ResponseCode.ERROR,
         err.message
-      ));
+      ), HttpStatus.INTERNAL_ERROR);
     }
   }
 

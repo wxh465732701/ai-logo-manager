@@ -22,10 +22,10 @@ class ConfigController {
       ));
     } catch (error) {
       context.error(`获取引导页配置失败: ${error.message}`);
-      return context.getResponse().status(HttpStatus.INTERNAL_ERROR).json(formatResponse(
+      return context.getResponse().json(formatResponse(
         ResponseCode.ERROR,
         error.message
-      ));
+      ), HttpStatus.INTERNAL_ERROR);
     }
   }
 
@@ -40,18 +40,18 @@ class ConfigController {
 
       // 验证请求体是否为数组
       if (!Array.isArray(configs)) {
-        return context.getResponse().status(HttpStatus.BAD_REQUEST).json(formatResponse(
+        return context.getResponse().json(formatResponse(
           ResponseCode.ERROR,
           '请求体必须是数组格式'
-        ));
+        ), HttpStatus.BAD_REQUEST);
       }
 
       // 验证数组不为空
       if (configs.length === 0) {
-        return context.getResponse().status(HttpStatus.BAD_REQUEST).json(formatResponse(
+        return context.getResponse().json(formatResponse(
           ResponseCode.ERROR,
           '配置数组不能为空'
-        ));
+        ), HttpStatus.BAD_REQUEST);
       }
 
       // 验证每个配置项
@@ -60,18 +60,18 @@ class ConfigController {
         
         // 验证必要字段
         if (!key || !value) {
-          return context.getResponse().status(HttpStatus.BAD_REQUEST).json(formatResponse(
+          return context.getResponse().json(formatResponse(
             ResponseCode.ERROR,
             '配置项必须包含 key 和 value 字段'
-          ));
+          ), HttpStatus.BAD_REQUEST);
         }
 
         // 验证字段类型
         if (typeof key !== 'string' || typeof value !== 'string') {
-          return context.getResponse().status(HttpStatus.BAD_REQUEST).json(formatResponse(
+          return context.getResponse().json(formatResponse(
             ResponseCode.ERROR,
             'key 和 value 必须是字符串类型'
-          ));
+          ), HttpStatus.BAD_REQUEST);
         }
       }
 
@@ -91,10 +91,10 @@ class ConfigController {
       ));
     } catch (error) {
       context.error(`添加配置失败: ${error.message}`);
-      return context.getResponse().status(HttpStatus.INTERNAL_ERROR).json(formatResponse(
+      return context.getResponse().json(formatResponse(
         ResponseCode.ERROR,
         error.message
-      ));
+      ), HttpStatus.INTERNAL_ERROR);
     }
   }
 }
