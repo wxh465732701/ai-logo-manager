@@ -69,6 +69,9 @@ class UserService {
       throw new Error(errors.join(', '));
     }
 
+    let userId;
+
+    // 根据登录类型验证用户
     if (loginType === 'email') {
       const user = await this.findUserByEmail(email);
       if (!user) {
@@ -79,17 +82,31 @@ class UserService {
         throw new Error('Invalid email or password');
       }
 
-      return await this.userTokenService.createSession(user.user_id);
+      userId = user.user_id;
     } else if (loginType === 'device') {
       const user = await this.findUserByDeviceId(deviceId);
       if (!user) {
         throw new Error('Invalid User');
       }
 
-      return await this.userTokenService.createSession(user.user_id);
+      userId = user.user_id;
+    } else {
+      throw new Error('Invalid login type');
     }
-    
-    throw new Error('Invalid login type');
+
+    // 检查是否存在有效会话
+    try {
+      const existingSession = await this.userTokenService.getSession(userId);
+      if (existingSession) {
+        // 如果会话存在且有效，直接返回
+        return existingSession;
+      }
+    } catch (error) {
+      // 如果获取会话失败（可能是会话不存在或已过期），继续创建新会话
+    }
+
+    // 创建新会话
+    return await this.userTokenService.createSession(userId);
   }
 
   async getCurrentUser(userId) {
