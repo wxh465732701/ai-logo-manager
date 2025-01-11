@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "start": "node src/main.js",
-    "dev": "nodemon src/main.js",
+    "dev": "nodemon src/local.js",
     "format": "prettier --write .",
     "setup": "npm install && npm run dev",
     "package:dev": "./scripts/package.sh dev",
@@ -22,7 +22,8 @@
     "dotenv": "^16.3.1",
     "@aws-sdk/client-s3": "^3.485.0",
     "@aws-sdk/lib-storage": "^3.485.0",
-    "multer": "^1.4.5-lts.1"
+    "multer": "^1.4.5-lts.1",
+    "body-parser": "^1.20.2"
   },
   "devDependencies": {
     "nodemon": "^3.1.0",

@@ -82,7 +82,7 @@ class ServiceContainer {
    */
   getUserTokenService() {
     if (!this.services.userTokenService) {
-      this.services.userTokenService = new UserTokenService(this.getUserRepository(), this.getSessionRepository());
+      this.services.userTokenService = new UserTokenService(this.getSessionRepository(), this.getUserRepository());
     }
     return this.services.userTokenService;
   }
