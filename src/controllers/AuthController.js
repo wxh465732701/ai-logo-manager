@@ -133,7 +133,7 @@ class AuthController {
 
       // 执行登录
       const session = await this.userService.login(email, password, loginType, deviceId);
-      context.log(`用户登录成功: ${session.userId}`);
+      context.log(`用户登录成功: ${session.user_id}`);
       return context.getResponse().json(formatResponse(
         ResponseCode.SUCCESS,
         ResponseMessage.SUCCESS,

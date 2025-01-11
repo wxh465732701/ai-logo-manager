@@ -19,6 +19,8 @@ app.use(logger);
 
 // 路由处理
 app.all('*', async (req, res) => {
+  let isResponseSent = false;
+  
   try {
     // 构造 Appwrite 风格的请求上下文
     const context = {
@@ -30,7 +32,10 @@ app.all('*', async (req, res) => {
       },
       res: {
         json: (data, status = 200) => {
-          res.status(status).json(data);
+          if (!isResponseSent) {
+            isResponseSent = true;
+            res.status(status).json(data);
+          }
         }
       },
       log: (message) => {
@@ -43,13 +48,23 @@ app.all('*', async (req, res) => {
 
     // 调用主处理函数
     await mainHandler(context);
+    
+    // 如果 mainHandler 没有发送响应，发送默认响应
+    if (!isResponseSent) {
+      res.status(404).json({
+        code: -1,
+        msg: 'No response sent'
+      });
+    }
   } catch (error) {
     console.error('Server Error:', error);
-    res.status(500).json({
-      code: -1,
-      msg: 'Internal Server Error',
-      error: error.message
-    });
+    if (!isResponseSent) {
+      res.status(500).json({
+        code: -1,
+        msg: 'Internal Server Error',
+        error: error.message
+      });
+    }
   }
 });
 

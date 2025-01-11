@@ -38,23 +38,13 @@ export default async ({ req, res, log, error }) => {
     const routeHandler = serviceContainer.getRouteHandler();
 
     // 处理请求
-    const response = await routeHandler.handleRequest(context);
-    context.log(`response: ${JSON.stringify(response)}`);
-    if (response) {
-      return response;
-    }
-
-    // 默认响应
-    return res.json(formatResponse(
-      ResponseCode.NOT_FOUND,
-      ResponseMessage.NOT_FOUND
-    ));
+    await routeHandler.handleRequest(context);
   } catch (err) {
     error(`服务器错误: ${err.message}`);
-    return res.json(formatResponse(
+    return context.getResponse().json(formatResponse(
       ResponseCode.ERROR,
       ResponseMessage.SERVER_ERROR,
       { error: err.message }
-    ));
+    ), HttpStatus.INTERNAL_ERROR);
   }
 };
