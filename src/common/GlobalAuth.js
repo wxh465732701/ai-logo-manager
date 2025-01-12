@@ -8,11 +8,16 @@ import ResponseDTO from '../models/ResponseDTO.js';
 const authMiddleware = (userTokenService) => {
   return async (req, res) => {
     try {
-      // 从请求头中获取 Auth_Token
-      const authToken = req.headers['auth_token'];
-      
+      // 从请求头中获取 Authorization Bearer Token
+      const authHeader = req.headers['authorization'];
+      if (!authHeader || !authHeader.startsWith('Bearer ')) {
+        return ResponseDTO.unauthorized('No authentication token provided');
+      }
+
+      // 提取 token
+      const authToken = authHeader.split(' ')[1];
       if (!authToken) {
-        return ResponseDTO.unauthorized(ResponseMessage.UNAUTHORIZED);
+        return ResponseDTO.unauthorized('Invalid authentication token');
       }
 
       try {

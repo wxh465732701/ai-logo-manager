@@ -42,7 +42,7 @@ class UserTokenService {
       }
 
       // 查询用户信息
-      const user = await this.userRepository.findUserByUserId(session.user_id);
+      const user = await this.userRepository.getUserByUserId(session.user_id);
       if (!user) {
         throw new Error('用户不存在');
       }
