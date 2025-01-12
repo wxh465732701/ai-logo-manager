@@ -7,8 +7,22 @@ CREATE TABLE `magic_logo_user` (
   `device_id` varchar(255) NOT NULL DEFAULT null COMMENT '设备id',
   `email` varchar(255) NOT NULL DEFAULT null COMMENT '邮箱',  
   `password` varchar(255) NOT NULL DEFAULT null COMMENT '密码',
+  `profile_image` varchar(255) NOT NULL DEFAULT null COMMENT '头像',
   `create_time` datetime(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) COMMENT '创建时间',
   `update_user` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '更新者',
+  `update_time` datetime(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3) COMMENT '更新时间',
+  PRIMARY KEY (`id`),
+) ENGINE=InnoDB AUTO_INCREMENT=181 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='用户表';
+
+CREATE TABLE `magic_logo_user_extend` (
+  `user_id` varchar(64) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT 'mis号',
+  `notify_status` int(10) NOT NULL DEFAULT '0' COMMENT '通知状态 0:开启 1:关闭',
+  `vip_status` int(10) NOT NULL DEFAULT '0' COMMENT 'vip状态 0:未开通 1:已开通',
+  `vip_type` int(10) NOT NULL DEFAULT '0' COMMENT 'vip类型 0:月订阅 1:年订阅',
+  `vip_start_time` datetime(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) COMMENT 'vip开始时间',
+  `vip_end_time` datetime(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) COMMENT 'vip结束时间',
+  `last_viewed_page` varchar(255) NOT NULL DEFAULT '' COMMENT '最后查看的页面',
+  `create_time` datetime(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) COMMENT '创建时间',
   `update_time` datetime(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3) COMMENT '更新时间',
   PRIMARY KEY (`id`),
 ) ENGINE=InnoDB AUTO_INCREMENT=181 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='用户表';
@@ -20,7 +34,6 @@ CREATE TABLE `magic_logo_session` (
   `update_time` datetime(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3) COMMENT '更新时间',
   PRIMARY KEY (`id`),
 ) ENGINE=InnoDB AUTO_INCREMENT=181 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='用户表';
-
 
 CREATE TABLE `magic_logo_config` (
   `config_id` varchar(64) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT 'config id',
@@ -57,8 +70,6 @@ CREATE TABLE `magic_logo_work_feature` (
   `update_time` datetime(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3) COMMENT '更新时间',
   PRIMARY KEY (`id`),
 ) ENGINE=InnoDB AUTO_INCREMENT=181 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='作品特征表';
-
-
 
 CREATE TABLE `magic_logo_work` (
   `id` varchar(64) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT 'id',

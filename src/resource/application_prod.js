@@ -11,7 +11,8 @@ export default {
     databaseId: '6761243a0025b0056e19',
     configCollectionId: '6766b4b1000813fca400',
     sessionCollectionId: '67612b79001a0b246da2',
-    userCollectionId: '67612c4c002ab937009a'
+    userCollectionId: '67612c4c002ab937009a',
+    userExtendCollectionId: '67612d2f001eb4de775e'
   },
 
   // Server Configuration

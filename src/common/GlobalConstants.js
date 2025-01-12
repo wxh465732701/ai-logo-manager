@@ -131,3 +131,37 @@ export const ConfigKey = {
     GUIDE_HOME_IMAGE: 'GUIDE_HOME_IMAGE',
     GUIDE_THIRD_PARTY_IMAGE: 'GUIDE_THIRD_PARTY_IMAGE'
 }
+
+export const NotifyStatus = {
+    OPEN: 1,
+    CLOSE: 0
+}
+
+export const VipStatus = {
+    NO_OPEN: 0,
+    OPEN: 1
+}
+
+export const VipType = {
+    MONTH: 0,
+    YEAR: 1
+}
+
+export const LastViewedPage = {
+    HOME: "home",
+    EMAIL_LOGIN: "email_login",
+    GUIDE_FIRST: "guide_first",
+    GUIDE_SECOND: "guide_second",
+    GUIDE_THIRD: "guide_third",
+    GUIDE_FOURTH: "guide_fourth",
+    GUIDE_FIFTH: "guide_fifth",
+    GUIDE_SIXTH: "guide_sixth",
+    CREATE_CHOOSE_FIRST: "create_choose_first",
+    CREATE_CHOOSE_SECOND: "create_choose_second",
+    CREATE_CHOOSE_THIRD: "create_choose_third",
+    CREATE_CHOOSE_FOURTH: "create_choose_fourth",
+    CREATE_CHOOSE_FIFTH: "create_choose_fifth",
+    CREATE_CHOOSE_SIXTH: "create_choose_sixth",
+    LOGO_RESULT: "logo_result",
+    PAYMENT: "payment"
+}

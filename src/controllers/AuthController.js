@@ -109,13 +109,13 @@ class AuthController {
       
       // 根据登录类型检查用户是否存在
       if (loginType === 'email') {
-        // 邮箱登录
-        user = await this.userService.findUserByEmail(email);
-        if (!user) {
-          // 用户不存在，自动注册
-          context.log(`用户不存在，自动注册: ${email}`);
-          user = await this.userService.registerByEmail(email, password);
-        }
+        //邮箱登录
+        // user = await this.userService.findUserByEmail(email);
+        // if (!user) {
+          //用户不存在，自动注册
+          // context.log(`用户不存在，自动注册: ${email}`);
+          // user = await this.userService.registerByEmail(email, password);
+        // }
       } else if (loginType === 'device') {
         // 设备登录
         user = await this.userService.findUserByDeviceId(deviceId);
@@ -142,9 +142,9 @@ class AuthController {
     } catch (err) {
       context.error(`登录错误: ${err.message}`);
       return context.getResponse().json(formatResponse(
-        ResponseCode.UNAUTHORIZED,
+        ResponseCode.ERROR,
         err.message
-      ), HttpStatus.UNAUTHORIZED);
+      ), HttpStatus.OK);
     }
   }
 

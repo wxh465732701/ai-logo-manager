@@ -1,6 +1,6 @@
 import { DataType, TypeChecker } from '../common/types/BaseTypes.js';
 import { Regex } from '../common/GlobalConstants.js';
-import { GlobalConstants, UserType, UserSource, UserStatus } from '../common/GlobalConstants.js';
+import { GlobalConstants, UserType, UserSource, UserStatus, NotifyStatus, VipStatus, VipType, LastViewedPage } from '../common/GlobalConstants.js';
 
 // 用户数据传输对象
 export class UserInfoDTO {
@@ -13,6 +13,7 @@ export class UserInfoDTO {
     this.source_type = data.source_type || UserSource.IOS;
     this.device_id = data.device_id || '';
     this.user_type = data.user_type || UserType.NORMAL;
+    this.profile_image = data.profile_image || "profile_image_0.png";
     this.create_time = data.create_time || new Date();
     this.update_time = data.update_time || new Date();
     this.update_user = data.update_user || GlobalConstants.SYSTEM_USER;
@@ -92,6 +93,7 @@ export class UserInfoDTO {
       source_type: this.source_type,
       device_id: this.device_id,
       user_type: this.user_type,
+      profile_image: this.profile_image,
       create_time: this.create_time.toISOString(),
       update_time: this.update_time.toISOString(),
       update_user: this.update_user
@@ -141,3 +143,23 @@ export class UserLoginDTO {
     };
   }
 } 
+
+export class UserExtendDTO {
+  constructor(data = {}) {
+    this.user_id = data.user_id || '';
+    this.notify_status = data.notify_status || NotifyStatus.OPEN;
+    this.vip_status = data.vip_status || VipStatus.NO_OPEN;
+    this.vip_type = data.vip_type;
+    this.vip_start_time = data.vip_start_time;
+    this.vip_end_time = data.vip_end_time;
+    this.last_viewed_page = data.last_viewed_page;
+    this.create_time = data.create_time || new Date();
+    this.update_time = data.update_time || new Date();
+  }
+
+  toJSON() {
+    return {
+      ...this
+    };
+  }
+}

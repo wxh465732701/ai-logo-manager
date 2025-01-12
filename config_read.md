@@ -86,4 +86,35 @@ response:
 - 400: 请求参数错误
 
 
+# 获取引导页配置
+/config/guide
+
+参数： 
+- key: 配置键
+- value: 配置值
+
+header:
+- Content-Type: application/json
+
+【示例】
+
+
+response:
+```json
+{"code":0,"msg":"success","data":{"homeImages":[{"imageUrl":"https://magic-logo-dev.s3.
+us-east-005.backblazeb2.com/dev/Image+Container.png","updateTime":"2024-12-22T03:08:47.620
++00:00","createTime":"2024-12-22T03:08:47.620+00:00"},{"imageUrl":"https://magic-logo-dev.s3.
+us-east-005.backblazeb2.com/dev/Image+Container+(1).png","updateTime":"2024-12-22T03:08:47.790
++00:00","createTime":"2024-12-22T03:08:47.790+00:00"},{"imageUrl":"https://magic-logo-dev.s3.
+us-east-005.backblazeb2.com/dev/Image+Container+(2).png","updateTime":"2024-12-22T03:08:47.928
++00:00","createTime":"2024-12-22T03:08:47.928+00:00"}],"thirdPartyImages":[]},
+"timestamp":1734837141564}
+```
+
+错误码：
+- 0: 成功
+- -1: 系统错误
+- 400: 请求参数错误
+- 500: 服务器错误
+
 

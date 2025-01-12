@@ -112,6 +112,30 @@ class UserRepository {
     }
   }
 
+  /**
+   * 更新用户头像
+   * @param {string} userId - 用户ID
+   * @param {string} profileImage - 头像URL
+   * @returns {Promise<UserInfoDTO>} 更新后的用户信息
+   */
+  async updateUser(userId, profileImage, userName) {
+    try {
+      const updatedUser = await this.databases.updateDocument(
+        this.databaseId,
+        this.userCollectionId,
+        userId,
+        {
+          profile_image: profileImage,
+          user_name: userName
+        }
+      );
+
+      return new UserInfoDTO(updatedUser);
+    } catch (error) {
+      throw new Error(`更新用户头像失败: ${error.message}`);
+    }
+  }
+
   async getUserByUserId(userId) {
     try {
       const users = await this.databases.listDocuments(

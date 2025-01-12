@@ -29,7 +29,7 @@ class UserService {
     // 创建用户
     const user = new User({
       email,
-      password,
+      password
     });
 
     // 验证用户对象
@@ -59,6 +59,28 @@ class UserService {
     user.user_name = NameGenerator.generate(10);
 
     return await this.userRepository.createByDevice(user);
+  }
+
+  /**
+   * 更新用户头像
+   * @param {string} userId - 用户ID
+   * @param {string} profileImage - 头像URL
+   * @returns {Promise<User>} 更新后的用户信息
+   */
+  async updateUser(userId, profileImage, userName) {
+    if (!userId) {
+      throw new Error('User ID is required');
+    }
+
+    if (!profileImage) {
+      throw new Error('Profile image URL is required');
+    }
+
+    if (!userName) {
+      throw new Error('User name is required');
+    }
+
+    return await this.userRepository.updateUser(userId, profileImage, userName);
   }
 
   async login(email, password, loginType, deviceId) {
