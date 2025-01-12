@@ -3,11 +3,17 @@ import UserRepository from '../repositories/userRepository.js';
 import UserService from '../services/userService.js';
 import UserTokenService from '../services/UserTokenService.js';
 import FileService from '../services/fileService.js';
-import RouteHandlerService from '../services/routeHandlerService.js';
+import RouteHandlerService from '../routes/RouteHandler.js';
 import ConfigRepository from '../repositories/ConfigRepository.js';
 import ConfigService from '../services/ConfigService.js';
 import config from '../resource/application.js';
 import SessionRepository from '../repositories/SessionRepository.js';
+import UserExtendRepository from '../repositories/UserExtendRepository.js';
+import UserExtendService from '../services/UserExtendService.js';
+import AuthController from '../controllers/AuthController.js';
+import ConfigController from '../controllers/ConfigController.js';
+import UserExtendController from '../controllers/UserExtendController.js';
+
 /**
  * 服务容器类
  * 用于管理服务实例的生命周期
@@ -50,8 +56,13 @@ class ServiceContainer {
       configRepository: null,
       configService: null,
       routeHandler: null,
-      sessionRepository: null
-      };
+      sessionRepository: null,
+      userExtendRepository: null,
+      userExtendService: null,
+      authController: null,
+      configController: null,
+      userExtendController: null
+    };
   }
 
   /**
@@ -132,15 +143,71 @@ class ServiceContainer {
   }
 
   /**
-   * 获取路由处理器服务
-   * @returns {RouteHandlerService}
+   * 获取用户扩展仓库服务
+   * @returns {UserExtendRepository}
+   */
+  getUserExtendRepository() {
+    if (!this.services.userExtendRepository) {
+      this.services.userExtendRepository = new UserExtendRepository(this.client);
+    }
+    return this.services.userExtendRepository;
+  }
+
+  /**
+   * 获取用户扩展服务
+   * @returns {UserExtendService}
+   */
+  getUserExtendService() {
+    if (!this.services.userExtendService) {
+      this.services.userExtendService = new UserExtendService(this.getUserExtendRepository());
+    }
+    return this.services.userExtendService;
+  }
+
+  /**
+   * 获取认证控制器
+   * @returns {AuthController}
+   */
+  getAuthController() {
+    if (!this.services.authController) {
+      this.services.authController = new AuthController(this.getUserService());
+    }
+    return this.services.authController;
+  }
+
+  /**
+   * 获取配置控制器
+   * @returns {ConfigController}
+   */
+  getConfigController() {
+    if (!this.services.configController) {
+      this.services.configController = new ConfigController(this.getConfigService());
+    }
+    return this.services.configController;
+  }
+
+  /**
+   * 获取用户扩展控制器
+   * @returns {UserExtendController}
+   */
+  getUserExtendController() {
+    if (!this.services.userExtendController) {
+      this.services.userExtendController = new UserExtendController(this.getUserExtendService());
+    }
+    return this.services.userExtendController;
+  }
+
+  /**
+   * 获取路由处理器
+   * @returns {RouteHandler}
    */
   getRouteHandler() {
     if (!this.services.routeHandler) {
       this.services.routeHandler = new RouteHandlerService(
         this.getUserService(),
         this.getFileService(),
-        this.getConfigService()
+        this.getConfigService(),
+        this.getUserExtendService()
       );
     }
     return this.services.routeHandler;

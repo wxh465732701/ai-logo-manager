@@ -3,16 +3,18 @@ import AuthController from '../controllers/AuthController.js';
 import FileController from '../controllers/FileController.js';
 import UserController from '../controllers/UserController.js';
 import ConfigController from '../controllers/ConfigController.js';
+import UserExtendController from '../controllers/UserExtendController.js';
 import { formatResponse, ResponseCode, ResponseMessage } from '../common/GlobalConstants.js';
 
 
 class RouteHandlerService {
-  constructor(userService, fileService, configService) {
+  constructor(userService, fileService, configService, userExtendService) {
     // 初始化控制器
     this.authController = new AuthController(userService);
     this.fileController = new FileController(fileService);
     this.userController = new UserController(userService);
     this.configController = new ConfigController(configService);
+    this.userExtendController = new UserExtendController(userExtendService);
 
     // 初始化路由处理器映射
     this.routeHandlers = new Map([
@@ -60,6 +62,13 @@ class RouteHandlerService {
         path: Routes.FILE_UPLOAD,
         method: HttpMethod.POST
       }, (context) => this.fileController.handleFileUpload(context)],
+
+      // 用户扩展相关路由
+      [{
+        path: Routes.UPDATE_USER_BASE,
+        method: HttpMethod.POST
+      }, (context) => this.userExtendController.handleUpdateUserBase(context)],
+
     ]);
   }
 

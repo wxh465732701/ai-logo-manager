@@ -147,7 +147,7 @@ export class UserLoginDTO {
 export class UserExtendDTO {
   constructor(data = {}) {
     this.user_id = data.user_id || '';
-    this.notify_status = data.notify_status || NotifyStatus.OPEN;
+    this.notify_status = data.notify_status || NotifyStatus.NO_OPEN;
     this.vip_status = data.vip_status || VipStatus.NO_OPEN;
     this.vip_type = data.vip_type;
     this.vip_start_time = data.vip_start_time;

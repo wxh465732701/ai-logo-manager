@@ -133,8 +133,8 @@ export const ConfigKey = {
 }
 
 export const NotifyStatus = {
-    OPEN: 1,
-    CLOSE: 0
+    NO_OPEN: 0,
+    OPEN: 1
 }
 
 export const VipStatus = {
@@ -143,8 +143,9 @@ export const VipStatus = {
 }
 
 export const VipType = {
-    MONTH: 0,
-    YEAR: 1
+    NONE: 0,
+    MONTH: 1,
+    YEAR: 2
 }
 
 export const LastViewedPage = {

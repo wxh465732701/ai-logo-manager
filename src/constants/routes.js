@@ -9,6 +9,9 @@ export const Routes = {
   // user
   GET_USER: '/auth/user',
 
+  // user extend
+  UPDATE_USER_BASE: '/user/update/base',
+
   // config
   GET_GUIDE_CONFIG: '/config/guide',
   ADD_CONFIG: '/c/r/add',

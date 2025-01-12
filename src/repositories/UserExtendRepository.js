@@ -127,26 +127,16 @@ class UserExtendRepository {
   }
 
   /**
-   * 更新通知状态
-   * @param {string} userId - 用户ID
-   * @param {number} notifyStatus - 通知状态
-   * @returns {Promise<UserExtendDTO>} 更新后的用户扩展信息
-   */
-  async updateNotifyStatus(userId, notifyStatus) {
-    return await this.update(userId, {
-      notify_status: notifyStatus
-    });
-  }
-
-  /**
    * 更新最后查看的页面
    * @param {string} userId - 用户ID
-   * @param {number} pageNumber - 页面编号
+   * @param {number} notifyStatus - 通知状态
+   * @param {string} lastViewedPage - 最后查看的页面
    * @returns {Promise<UserExtendDTO>} 更新后的用户扩展信息
    */
-  async updateLastViewedPage(userId, pageNumber) {
+  async updateUserBase(userId, notifyStatus, lastViewedPage) {
     return await this.update(userId, {
-      last_viewed_page: pageNumber
+      notify_status: notifyStatus,
+      last_viewed_page: lastViewedPage
     });
   }
 
