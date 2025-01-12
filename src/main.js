@@ -27,7 +27,7 @@ export default async ({ req, res, log, error }) => {
       
       // 等待认证完成
       const authResponse = await auth(req, res);
-      context.log(`authResponse: ${JSON.stringify(authResponse)}`);
+      context.log(`authResponse: ${authResponse.isSuccess()}`);
 
       // 验证失败直接返回
       if (!authResponse.isSuccess()) {
@@ -40,6 +40,7 @@ export default async ({ req, res, log, error }) => {
 
     // 处理请求
     const response = await routeHandler.handleRequest(context);
+    context.log(`response: ${JSON.stringify(response)}`);
     return res.json(response.toResponse(), response.httpStatus);
   } catch (err) {
     error(`服务器错误: ${err.message}`);

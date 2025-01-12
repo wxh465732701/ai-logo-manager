@@ -141,7 +141,7 @@ class UserRepository {
       const users = await this.databases.listDocuments(
         this.databaseId,
         this.userCollectionId,
-        [Query.equal('userId', userId)]
+        [Query.equal('user_id', userId)]
       );
       return users.documents[0];
     } catch (error) {

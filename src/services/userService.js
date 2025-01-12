@@ -2,9 +2,10 @@ import NameGenerator from '../common/utils/NameGenerator.js';
 import { UserInfoDTO as User, UserLoginDTO as UserLoginRequest } from '../models/UserInfoDTO.js';
 
 class UserService {
-  constructor(userRepository, userTokenService) {
+  constructor(userRepository, userTokenService, userExtendService) {
     this.userRepository = userRepository;
     this.userTokenService = userTokenService;
+    this.userExtendService = userExtendService;
   }
 
   /**
@@ -41,7 +42,9 @@ class UserService {
     user.user_name = NameGenerator.generate(10);
 
     // 创建用户
-    return await this.userRepository.createByEmailAndPassword(user);
+    const createdUser = await this.userRepository.createByEmailAndPassword(user);
+    await this.userExtendService.createDefaultUserExtend(createdUser.user_id);
+    return createdUser;
   }
 
   async registerByDevice(deviceId) {
@@ -58,7 +61,9 @@ class UserService {
 
     user.user_name = NameGenerator.generate(10);
 
-    return await this.userRepository.createByDevice(user);
+    const createdUser = await this.userRepository.createByDevice(user);
+    await this.userExtendService.createDefaultUserExtend(createdUser.user_id);
+    return createdUser;
   }
 
   /**
