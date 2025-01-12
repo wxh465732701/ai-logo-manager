@@ -117,4 +117,42 @@ us-east-005.backblazeb2.com/dev/Image+Container+(2).png","updateTime":"2024-12-2
 - 400: 请求参数错误
 - 500: 服务器错误
 
+# 更新用户基本信息
+/user/update/base
+
+说明：
+- 更新用户的通知状态和最后查看页面
+- 需要用户登录认证
+
+参数：
+- notifyStatus: 通知状态（0: 关闭, 1: 开启）
+- lastViewedPage: 最后查看页面（0: 首页, 1: 个人中心, 2: 设置页面, 3: VIP页面）
+
+header:
+- Content-Type: application/json
+- Authorization: Bearer <session_id>
+
+【示例】
+```json
+{
+  "notifyStatus": 1,
+  "lastViewedPage": "home"
+}
+```
+
+response:
+```json
+{
+  "code": 0,
+  "msg": "success",
+  "data": null
+}
+```
+
+错误码：
+- 0: 成功
+- 401: 未授权（未登录）
+- 400: 请求参数错误
+- 500: 服务器内部错误
+
 

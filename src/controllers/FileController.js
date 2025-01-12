@@ -1,4 +1,5 @@
-import { ResponseCode, ResponseMessage, formatResponse, HttpStatus } from '../common/GlobalConstants.js';
+import { ResponseCode, ResponseMessage, HttpStatus } from '../common/GlobalConstants.js';
+import ResponseDTO from '../models/ResponseDTO.js';
 
 class FileController {
   constructor(fileService) {
@@ -9,24 +10,14 @@ class FileController {
     try {
       const file = context.getRequest().file;
       if (!file) {
-        return context.getResponse().json(formatResponse(
-          ResponseCode.ERROR,
-          '没有文件被上传'
-        ), HttpStatus.BAD_REQUEST);
+        return ResponseDTO.businessError(ResponseCode.ERROR, '没有文件被上传');
       }
 
       const result = await this.fileService.uploadFile(file);
-      return context.getResponse().json(formatResponse(
-        ResponseCode.SUCCESS,
-        ResponseMessage.SUCCESS,
-        result
-      ));
+      return ResponseDTO.success(result);
     } catch (err) {
       context.error(`文件上传错误: ${err.message}`);
-      return context.getResponse().json(formatResponse(
-        ResponseCode.ERROR,
-        err.message
-      ), HttpStatus.INTERNAL_ERROR);
+      return ResponseDTO.serverError(err.message);
     }
   }
 
@@ -34,17 +25,10 @@ class FileController {
     try {
       const { fileKey } = context.getParams();
       const result = await this.fileService.deleteFile(fileKey);
-      return context.getResponse().json(formatResponse(
-        ResponseCode.SUCCESS,
-        ResponseMessage.SUCCESS,
-        result
-      ));
+      return ResponseDTO.success(result);
     } catch (err) {
       context.error(`文件删除错误: ${err.message}`);
-      return context.getResponse().json(formatResponse(
-        ResponseCode.ERROR,
-        err.message
-      ), HttpStatus.INTERNAL_ERROR);
+      return ResponseDTO.serverError(err.message);
     }
   }
 
@@ -56,17 +40,10 @@ class FileController {
         fileKey,
         parseInt(expiresIn) || 3600
       );
-      return context.getResponse().json(formatResponse(
-        ResponseCode.SUCCESS,
-        ResponseMessage.SUCCESS,
-        result
-      ));
+      return ResponseDTO.success(result);
     } catch (err) {
       context.error(`获取文件URL错误: ${err.message}`);
-      return context.getResponse().json(formatResponse(
-        ResponseCode.ERROR,
-        err.message
-      ), HttpStatus.INTERNAL_ERROR);
+      return ResponseDTO.serverError(err.message);
     }
   }
 }

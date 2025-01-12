@@ -1,4 +1,5 @@
 import { ResponseCode, ResponseMessage, formatResponse, HttpStatus } from './GlobalConstants.js';
+import ResponseDTO from '../models/ResponseDTO.js';
 
 /**
  * 认证中间件
@@ -11,13 +12,7 @@ const authMiddleware = (userTokenService) => {
       const authToken = req.headers['auth_token'];
       
       if (!authToken) {
-        return res.json(
-          formatResponse(
-            ResponseCode.UNAUTHORIZED,
-            ResponseMessage.UNAUTHORIZED,
-            { message: 'No authentication token provided' }
-          ), HttpStatus.UNAUTHORIZED
-        );
+        return ResponseDTO.unauthorized(ResponseMessage.UNAUTHORIZED);
       }
 
       try {
@@ -26,23 +21,15 @@ const authMiddleware = (userTokenService) => {
         
         // 将用户信息添加到请求对象中
         req.user = user;
+
+        // 验证成功，返回成功响应
+        return ResponseDTO.success({ user });
+
       } catch (error) {
-        return res.json(
-          formatResponse(
-            ResponseCode.UNAUTHORIZED,
-            ResponseMessage.UNAUTHORIZED,
-            { message: error.message }
-          ), HttpStatus.UNAUTHORIZED
-        );
+        return ResponseDTO.unauthorized(error.message);
       }
     } catch (error) {
-      return res.json(
-        formatResponse(
-          ResponseCode.ERROR,
-          ResponseMessage.SERVER_ERROR,
-          { message: error.message }
-        ), HttpStatus.INTERNAL_ERROR
-      );
+      return ResponseDTO.serverError(error.message);
     }
   };
 };

@@ -1,5 +1,5 @@
-import { ResponseCode, ResponseMessage, formatResponse, HttpStatus } from '../common/GlobalConstants.js';
-import { VipType } from '../common/GlobalConstants.js';
+import { ResponseCode, ResponseMessage, HttpStatus } from '../common/GlobalConstants.js';
+import ResponseDTO from '../models/ResponseDTO.js';
 
 class UserExtendController {
   constructor(userExtendService) {
@@ -15,19 +15,12 @@ class UserExtendController {
       const userId = context.getUser().user_id;
       const { notifyStatus, lastViewedPage } = context.getBody();
 
-      const userExtend = await this.userExtendService.updateUserBase(userId, notifyStatus, lastViewedPage);
+      await this.userExtendService.updateUserBase(userId, notifyStatus, lastViewedPage);
       
-      return context.getResponse().json(formatResponse(
-        ResponseCode.SUCCESS,
-        ResponseMessage.SUCCESS,
-        { userExtend }
-      ));
+      return ResponseDTO.success();
     } catch (err) {
       context.error(`更新用户基本信息失败: ${err.message}`);
-      return context.getResponse().json(formatResponse(
-        ResponseCode.ERROR,
-        err.message
-      ), HttpStatus.INTERNAL_ERROR);
+      return ResponseDTO.serverError(err.message);
     }
   }
 }

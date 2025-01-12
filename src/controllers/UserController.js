@@ -1,4 +1,5 @@
-import { ResponseCode, ResponseMessage, formatResponse, HttpStatus } from '../common/GlobalConstants.js';
+import { ResponseCode, ResponseMessage, HttpStatus } from '../common/GlobalConstants.js';
+import ResponseDTO from '../models/ResponseDTO.js';
 
 class UserController {
   constructor(userService) {
@@ -13,25 +14,15 @@ class UserController {
         parseInt(offset) || 0
       );
       context.log(`总用户数: ${response.total}`);
-      return context.getResponse().json(formatResponse(
-        ResponseCode.SUCCESS,
-        ResponseMessage.SUCCESS,
-        response
-      ));
+      return ResponseDTO.success(response);
     } catch (err) {
       context.error(`获取用户列表错误: ${err.message}`);
-      return context.getResponse().json(formatResponse(
-        ResponseCode.ERROR,
-        err.message
-      ), HttpStatus.INTERNAL_ERROR);
+      return ResponseDTO.serverError(err.message);
     }
   }
 
   async handlePing(context) {
-    return context.getResponse().json(formatResponse(
-      ResponseCode.SUCCESS,
-      `Pong from ${process.env.NODE_ENV}`
-    ));
+    return ResponseDTO.success(`Pong from ${process.env.NODE_ENV}`);
   }
 }
 

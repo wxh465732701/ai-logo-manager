@@ -4,7 +4,7 @@ import FileController from '../controllers/FileController.js';
 import UserController from '../controllers/UserController.js';
 import ConfigController from '../controllers/ConfigController.js';
 import UserExtendController from '../controllers/UserExtendController.js';
-import { formatResponse, ResponseCode, ResponseMessage } from '../common/GlobalConstants.js';
+import ResponseDTO from '../models/ResponseDTO.js';
 
 
 class RouteHandlerService {
@@ -82,24 +82,14 @@ class RouteHandlerService {
     
     if (handler) {
       try{
-        const response = await handler(context);
-        if (response) {
-          return response;
-        }
+        return await handler(context);
       } catch (error) {
         context.log(`error: ${error.message}`);
-        return context.getResponse().json(formatResponse(
-          ResponseCode.ERROR,
-          ResponseMessage.SERVER_ERROR,
-          { message: error.message }
-        ));
+        return ResponseDTO.serverError(error.message);
       }
     }
 
-    return context.getResponse().json(formatResponse(
-      ResponseCode.NOT_FOUND,
-      ResponseMessage.NOT_FOUND
-    ));
+    return ResponseDTO.notFound();
   }
 
   // 获取路由处理器

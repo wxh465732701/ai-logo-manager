@@ -1,4 +1,5 @@
 import { ResponseCode, ResponseMessage, formatResponse, HttpStatus } from '../common/GlobalConstants.js';
+import ResponseDTO from '../models/ResponseDTO.js';
 
 class AuthController {
   constructor(userService) {
@@ -13,27 +14,16 @@ class AuthController {
       const existingUser = await this.userService.findUserByEmail(email);
       if (existingUser) {
         context.log(`用户注册失败: 邮箱 ${email} 已存在`);
-        return context.getResponse().json(formatResponse(
-          ResponseCode.USER_EXISTS,
-          ResponseMessage.USER_EXISTS,
-          { email }
-        ));
+        return ResponseDTO.businessError(ResponseCode.USER_EXISTS, ResponseMessage.USER_EXISTS, { email });
       }
 
       // 创建新用户
       const user = await this.userService.registerByEmail(email, password);
       context.log(`用户注册成功: ${user.user_id}`);
-      return context.getResponse().json(formatResponse(
-        ResponseCode.SUCCESS,
-        ResponseMessage.SUCCESS,
-        { user }
-      ));
+      return ResponseDTO.success({ user });
     } catch (err) {
       context.error(`注册错误: ${err.message}`);
-      return context.getResponse().json(formatResponse(
-        ResponseCode.ERROR,
-        err.message
-      ), HttpStatus.BAD_REQUEST);
+      return ResponseDTO.serverError(err.message);
     }
   }
 
@@ -45,27 +35,16 @@ class AuthController {
       const existingUser = await this.userService.findUserByDeviceId(deviceId);
       if (existingUser) {
         context.log(`设备注册失败: 设备 ${deviceId} 已注册`);
-        return context.getResponse().json(formatResponse(
-          ResponseCode.DEVICE_EXISTS,
-          ResponseMessage.DEVICE_EXISTS,
-          { deviceId }
-        ));
+        return ResponseDTO.businessError(ResponseCode.DEVICE_EXISTS, ResponseMessage.DEVICE_EXISTS, { deviceId });
       }
 
       // 创建新用户
       const user = await this.userService.registerByDevice(deviceId);
       context.log(`设备注册成功: ${user.user_id}`);
-      return context.getResponse().json(formatResponse(
-        ResponseCode.SUCCESS,
-        ResponseMessage.SUCCESS,
-        { user }
-      ));
+      return ResponseDTO.success({ user });
     } catch (err) {
       context.error(`注册错误: ${err.message}`);
-      return context.getResponse().json(formatResponse(
-        ResponseCode.ERROR,
-        err.message
-      ), HttpStatus.BAD_REQUEST);
+      return ResponseDTO.serverError(err.message);
     }
   }
 
@@ -125,26 +104,16 @@ class AuthController {
           user = await this.userService.registerByDevice(deviceId);
         }
       } else {
-        return context.getResponse().json(formatResponse(
-          ResponseCode.ERROR,
-          '无效的登录类型'
-        ), HttpStatus.BAD_REQUEST);
+        return ResponseDTO.businessError(ResponseCode.ERROR, '无效的登录类型');
       }
 
       // 执行登录
       const session = await this.userService.login(email, password, loginType, deviceId);
       context.log(`用户登录成功: ${session.user_id}`);
-      return context.getResponse().json(formatResponse(
-        ResponseCode.SUCCESS,
-        ResponseMessage.SUCCESS,
-        { session }
-      ));
+      return ResponseDTO.success({ session });
     } catch (err) {
       context.error(`登录错误: ${err.message}`);
-      return context.getResponse().json(formatResponse(
-        ResponseCode.ERROR,
-        err.message
-      ), HttpStatus.OK);
+      return ResponseDTO.serverError(err.message);
     }
   }
 
@@ -152,17 +121,10 @@ class AuthController {
     try {
       const userId = context.getUser().user_id;
       const user = await this.userService.getCurrentUser(userId);
-      return context.getResponse().json(formatResponse(
-        ResponseCode.SUCCESS,
-        ResponseMessage.SUCCESS,
-        { user }
-      ));
+      return ResponseDTO.success({ user });
     } catch (err) {
       context.error(`获取用户信息错误: ${err.message}`);
-      return context.getResponse().json(formatResponse(
-        ResponseCode.UNAUTHORIZED,
-        err.message
-      ), HttpStatus.UNAUTHORIZED);
+      return ResponseDTO.serverError(err.message);
     }
   }
 
@@ -170,16 +132,10 @@ class AuthController {
     try {
       const userId = context.getUser().user_id;
       await this.userService.logout(userId);
-      return context.getResponse().json(formatResponse(
-        ResponseCode.SUCCESS,
-        ResponseMessage.SUCCESS
-      ));
+      return ResponseDTO.success();
     } catch (err) {
       context.error(`登出错误: ${err.message}`);
-      return context.getResponse().json(formatResponse(
-        ResponseCode.ERROR,
-        err.message
-      ), HttpStatus.INTERNAL_ERROR);
+      return ResponseDTO.serverError(err.message);
     }
   }
 }

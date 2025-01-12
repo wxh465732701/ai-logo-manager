@@ -134,7 +134,7 @@ class UserExtendRepository {
    * @returns {Promise<UserExtendDTO>} 更新后的用户扩展信息
    */
   async updateUserBase(userId, notifyStatus, lastViewedPage) {
-    return await this.update(userId, {
+    await this.update(userId, {
       notify_status: notifyStatus,
       last_viewed_page: lastViewedPage
     });

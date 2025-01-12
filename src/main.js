@@ -4,6 +4,7 @@ import serviceContainer from './common/ServiceContainer.js';
 import authMiddleware from './common/GlobalAuth.js';
 import config from './resource/application.js';
 import RequestContext from './common/RequestContext.js';
+import ResponseDTO from './models/ResponseDTO.js';
 
 // Appwrite 函数入口
 export default async ({ req, res, log, error }) => {
@@ -28,9 +29,9 @@ export default async ({ req, res, log, error }) => {
       const authResponse = await auth(req, res);
       context.log(`authResponse: ${JSON.stringify(authResponse)}`);
 
-      // 验证失败直接结束
-      if (authResponse.statusCode !== HttpStatus.OK) {
-        return authResponse;
+      // 验证失败直接返回
+      if (!authResponse.isSuccess()) {
+        return res.json(authResponse.toResponse(), authResponse.httpStatus);
       }
     }
 
@@ -38,13 +39,11 @@ export default async ({ req, res, log, error }) => {
     const routeHandler = serviceContainer.getRouteHandler();
 
     // 处理请求
-    await routeHandler.handleRequest(context);
+    const response = await routeHandler.handleRequest(context);
+    return res.json(response.toResponse(), response.httpStatus);
   } catch (err) {
     error(`服务器错误: ${err.message}`);
-    return context.getResponse().json(formatResponse(
-      ResponseCode.ERROR,
-      ResponseMessage.SERVER_ERROR,
-      { error: err.message }
-    ), HttpStatus.INTERNAL_ERROR);
+    const serverErrorResponse = ResponseDTO.serverError(err.message);
+    return res.json(serverErrorResponse.toResponse(), serverErrorResponse.httpStatus);
   }
 };

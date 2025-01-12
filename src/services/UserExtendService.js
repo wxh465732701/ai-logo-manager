@@ -108,7 +108,7 @@ class UserExtendService {
       throw new Error('用户ID不能为空');
     }
 
-    return await this.userExtendRepository.updateUserBase(userId, notifyStatus, lastViewedPage);
+    await this.userExtendRepository.updateUserBase(userId, notifyStatus, lastViewedPage);
   }
 
   /**
