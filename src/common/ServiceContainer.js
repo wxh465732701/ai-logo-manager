@@ -13,6 +13,8 @@ import UserExtendService from '../services/UserExtendService.js';
 import AuthController from '../controllers/AuthController.js';
 import ConfigController from '../controllers/ConfigController.js';
 import UserExtendController from '../controllers/UserExtendController.js';
+import { CozeService } from '../services/CozeService.js';
+import CozeController from '../controllers/CozeController.js';
 
 /**
  * 服务容器类
@@ -61,7 +63,9 @@ class ServiceContainer {
       userExtendService: null,
       authController: null,
       configController: null,
-      userExtendController: null
+      userExtendController: null,
+      cozeService: null,
+      cozeController: null
     };
   }
 
@@ -211,6 +215,28 @@ class ServiceContainer {
       );
     }
     return this.services.routeHandler;
+  }
+
+  /**
+   * 获取 Coze 服务
+   * @returns {CozeService}
+   */
+  getCozeService() {
+    if (!this.services.cozeService) {
+      this.services.cozeService = new CozeService();
+    }
+    return this.services.cozeService;
+  }
+
+  /**
+   * 获取 Coze 控制器
+   * @returns {CozeController}
+   */
+  getCozeController() {
+    if (!this.services.cozeController) {
+      this.services.cozeController = new CozeController(this.getCozeService());
+    }
+    return this.services.cozeController;
   }
 
   /**

@@ -36,5 +36,11 @@ export default {
   jwt: {
     secret: 'your_jwt_secret_key',
     expiresIn: '24h'
+  },
+
+  coze: {
+    appId: '1188255870615',
+    keyId: 'J9OtKgjFlHnRK_pzjvi0G4gwna7hF9dQ3Y_6FzD7N-U',
+    aud: 'https://api.coze.com',
   }
 }; 

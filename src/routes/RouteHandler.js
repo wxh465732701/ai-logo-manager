@@ -4,7 +4,9 @@ import FileController from '../controllers/FileController.js';
 import UserController from '../controllers/UserController.js';
 import ConfigController from '../controllers/ConfigController.js';
 import UserExtendController from '../controllers/UserExtendController.js';
+import CozeController from '../controllers/CozeController.js';
 import ResponseDTO from '../models/ResponseDTO.js';
+import ServiceContainer from '../common/ServiceContainer.js';
 
 
 class RouteHandlerService {
@@ -15,6 +17,7 @@ class RouteHandlerService {
     this.userController = new UserController(userService);
     this.configController = new ConfigController(configService);
     this.userExtendController = new UserExtendController(userExtendService);
+    this.cozeController = ServiceContainer.getCozeController();
 
     // 初始化路由处理器映射
     this.routeHandlers = new Map([
@@ -69,6 +72,11 @@ class RouteHandlerService {
         method: HttpMethod.POST
       }, (context) => this.userExtendController.handleUpdateUserBase(context)],
 
+      // Coze 相关路由
+      [{
+        path: Routes.COZE_CHAT,
+        method: HttpMethod.POST
+      }, (context) => this.cozeController.chat(context.getRequest(), context.getResponse())],
     ]);
   }
 

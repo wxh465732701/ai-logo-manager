@@ -20,7 +20,10 @@ export const Routes = {
   FILE_UPLOAD: '/files/upload',
 
   // ping
-  PING: '/ping'
+  PING: '/ping',
+
+  // coze
+  COZE_CHAT: '/api/coze/chat'
 };
 
 // HTTP 方法枚举
