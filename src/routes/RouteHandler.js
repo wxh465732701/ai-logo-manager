@@ -7,6 +7,10 @@ import UserExtendController from '../controllers/UserExtendController.js';
 import CozeController from '../controllers/CozeController.js';
 import ResponseDTO from '../models/ResponseDTO.js';
 import ServiceContainer from '../common/ServiceContainer.js';
+import PayOrderController from '../controllers/PayOrderController.js';
+import { authMiddleware } from '../common/GlobalAuth.js';
+import WorkController from '../controllers/WorkController.js';
+import LogoController from '../controllers/LogoController.js';
 
 
 class RouteHandlerService {
@@ -77,6 +81,44 @@ class RouteHandlerService {
         path: Routes.COZE_CHAT,
         method: HttpMethod.POST
       }, (context) => this.cozeController.chat(context.getRequest(), context.getResponse())],
+
+      // 支付相关路由
+      [{
+        path: '/api/pay/create-order',
+        method: HttpMethod.POST
+      }, (context) => PayOrderController.createOrder(context)],
+
+      [{
+        path: '/api/pay/apple-notify',
+        method: HttpMethod.POST
+      }, (context) => {
+        const { req, res } = context;
+        return PayOrderController.handleApplePayNotification(req, res);
+      }],
+
+      [{
+        path: '/api/pay/verify-apple-payment',
+        method: HttpMethod.POST
+      }, (context) => {
+        const { req, res } = context;
+        return PayOrderController.verifyApplePayment(req, res);
+      }],
+
+      [{
+        path: '/api/work/create',
+        method: HttpMethod.POST
+      }, (context) => {
+        const { req, res } = context;
+        return WorkController.createWork(req, res);
+      }],
+
+      [{
+        path: '/api/logo/generate',
+        method: HttpMethod.POST
+      }, (context) => {
+        const { req, res } = context;
+        return LogoController.generateLogo(req, res);
+      }]
     ]);
   }
 

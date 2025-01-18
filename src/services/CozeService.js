@@ -1,5 +1,5 @@
 import { ChatEventType, RoleType } from '@coze/api';
-import { client } from './remote/CozeTokenService.js';
+import CozeTokenService from './remote/CozeTokenService.js';
 import { ResponseDTO } from '../models/ResponseDTO.js';
 
 class CozeService {
@@ -11,6 +11,9 @@ class CozeService {
      */
     async chat(botId, message) {
         try {
+            // 获取有效的client实例
+            const client = await CozeTokenService.getClient();
+            
             const stream = await client.chat.stream({
                 bot_id: botId,
                 additional_messages: [
@@ -35,6 +38,22 @@ class CozeService {
             return new ResponseDTO(false, error.message || 'Failed to chat with Coze bot');
         }
     }
+
+    /**
+     * 获取Bot信息
+     * @param {string} botId - Bot ID
+     * @returns {Promise<ResponseDTO>}
+     */
+    async getBotInfo(botId) {
+        try {
+            const client = await CozeTokenService.getClient();
+            const botInfo = await client.bot.get(botId);
+            return new ResponseDTO(true, 'Success', botInfo);
+        } catch (error) {
+            console.error('Get bot info error:', error);
+            return new ResponseDTO(false, error.message || 'Failed to get bot info');
+        }
+    }
 }
 
-export default CozeService; 
+export default new CozeService(); 

@@ -106,7 +106,7 @@ export const Environment = {
   TEST: 'test'
 };
 
-// 缓���键前缀
+// 缓存键前缀
 export const CachePrefix = {
   USER: 'user:',
   TOKEN: 'token:',
@@ -166,3 +166,10 @@ export const LastViewedPage = {
     LOGO_RESULT: "logo_result",
     PAYMENT: "payment"
 }
+
+export const GoodsConstants = {
+  MONTHLY_FIRST: 'monthly_first',    // 月度首充
+  MONTHLY_NORMAL: 'monthly_normal',  // 月度常规
+  YEARLY_FIRST: 'yearly_first',      // 年度首充
+  YEARLY_NORMAL: 'yearly_normal'     // 年度常规
+};
